@@ -1,5 +1,7 @@
 # nano-block-example
 
+⚠️ **WARNING: This project operates at the kernel level and can affect network connectivity. Use with caution and test in a safe environment first!**
+
 A high-performance network firewall example using eBPF (Extended Berkeley Packet Filter) and the NanoBlock framework. This project demonstrates how to build a packet filtering system that can block IP addresses and allow specific ports at the kernel level for maximum performance.
 
 ## What it does
@@ -39,6 +41,8 @@ This example creates an XDP (eXpress Data Path) program that:
 
 ## Usage
 
+⚠️ **CAUTION: Always test in a safe environment first! This program can block network traffic and potentially lock you out of remote access.**
+
 ### Basic Usage
 
 1. **Build and run the firewall:**
@@ -48,9 +52,12 @@ This example creates an XDP (eXpress Data Path) program that:
    ```
 
 2. **Specify a network interface (default: bond0):**
+
    ```bash
    cargo run --release -- --iface eth0
    ```
+
+   ⚠️ **Make sure you're not using the same interface you're connected through for remote access!**
 
 ### What happens when you run it
 
@@ -107,6 +114,14 @@ CC=${ARCH}-linux-musl-gcc cargo build --package nano-block-example --release \
 The cross-compiled program `target/${ARCH}-unknown-linux-musl/release/nano-block-example` can be copied to a Linux server or VM and run there.
 
 ## Requirements
+
+⚠️ **IMPORTANT SAFETY NOTES:**
+
+- **Test environment first** - Never run this on a production system without thorough testing
+- **Backup access** - Ensure you have alternative access methods (console, IPMI, etc.) in case network access is lost
+- **Monitor carefully** - Watch system logs and network connectivity during testing
+
+**Technical Requirements:**
 
 - **Linux kernel 4.18+** (for XDP support)
 - **Root privileges** (required for loading eBPF programs)
