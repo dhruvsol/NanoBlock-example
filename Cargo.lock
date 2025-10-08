@@ -460,7 +460,7 @@ dependencies = [
 [[package]]
 name = "nano-block"
 version = "0.1.0"
-source = "git+https://github.com/dhruvsol/NanoBlock#e2f75085ffa55dcb089dfeda32ae50512af33c14"
+source = "git+https://github.com/dhruvsol/NanoBlock#98ee399450bb7295f5ba6cb0a2ac4fd17b9744d1"
 dependencies = [
  "aya",
  "aya-log",
@@ -471,9 +471,10 @@ dependencies = [
 [[package]]
 name = "nano-block-ebpf"
 version = "0.1.0"
-source = "git+https://github.com/dhruvsol/NanoBlock#e2f75085ffa55dcb089dfeda32ae50512af33c14"
+source = "git+https://github.com/dhruvsol/NanoBlock#98ee399450bb7295f5ba6cb0a2ac4fd17b9744d1"
 dependencies = [
  "aya-ebpf",
+ "aya-log-ebpf",
  "network-types",
 ]
 
@@ -510,6 +511,7 @@ dependencies = [
  "aya-log-ebpf",
  "nano-block-ebpf",
  "nano-block-example-common",
+ "network-types",
  "which",
 ]
 

@@ -3,11 +3,12 @@ use aya::programs::{Xdp, XdpFlags};
 use clap::Parser;
 #[rustfmt::skip]
 use log::{debug, warn};
+use nano_block::FirewallManager;
 use tokio::signal;
 
 #[derive(Debug, Parser)]
 struct Opt {
-    #[clap(short, long, default_value = "eth0")]
+    #[clap(short, long, default_value = "bond0")]
     iface: String,
 }
 
@@ -36,6 +37,14 @@ async fn main() -> anyhow::Result<()> {
         env!("OUT_DIR"),
         "/nano-block-example"
     )))?;
+
+    let mut fw = FirewallManager::new(&mut ebpf)?;
+    log::info!("FirewallManager initialized");
+    fw.allow_port(22).await?;
+    log::info!("FirewallManager init 22");
+    fw.allow_port(3000).await?;
+    log::info!("FirewallManager init 3000");
+
     match aya_log::EbpfLogger::init(&mut ebpf) {
         Err(e) => {
             // This can happen if you remove all log statements from your eBPF program.
@@ -53,8 +62,10 @@ async fn main() -> anyhow::Result<()> {
             });
         }
     }
+
     let Opt { iface } = opt;
     let program: &mut Xdp = ebpf.program_mut("nano_block_example").unwrap().try_into()?;
+
     program.load()?;
     program.attach(&iface, XdpFlags::default())
         .context("failed to attach the XDP program with default flags - try changing XdpFlags::default() to XdpFlags::SKB_MODE")?;
