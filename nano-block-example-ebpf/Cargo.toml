@@ -8,6 +8,7 @@ nano-block-example-common = { path = "../nano-block-example-common" }
 
 aya-ebpf = { workspace = true }
 aya-log-ebpf = { workspace = true }
+nano-block-ebpf = { workspace = true }
 
 [build-dependencies]
 which = { workspace = true }
