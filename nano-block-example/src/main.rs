@@ -1,3 +1,5 @@
+use std::{net::IpAddr, str::FromStr};
+
 use anyhow::Context as _;
 use aya::programs::{Xdp, XdpFlags};
 use clap::Parser;
@@ -38,13 +40,6 @@ async fn main() -> anyhow::Result<()> {
         "/nano-block-example"
     )))?;
 
-    let mut fw = FirewallManager::new(&mut ebpf)?;
-    log::info!("FirewallManager initialized");
-    fw.allow_port(22).await?;
-    log::info!("FirewallManager init 22");
-    fw.allow_port(3000).await?;
-    log::info!("FirewallManager init 3000");
-
     match aya_log::EbpfLogger::init(&mut ebpf) {
         Err(e) => {
             // This can happen if you remove all log statements from your eBPF program.
@@ -70,6 +65,18 @@ async fn main() -> anyhow::Result<()> {
     program.attach(&iface, XdpFlags::default())
         .context("failed to attach the XDP program with default flags - try changing XdpFlags::default() to XdpFlags::SKB_MODE")?;
 
+    let mut fw = FirewallManager::new(&mut ebpf)?;
+    log::info!("FirewallManager initialized");
+    fw.allow_port(22).await?;
+    log::info!("FirewallManager init 22");
+    fw.allow_port(3000).await?;
+    log::info!("FirewallManager init 3000");
+    let ip = IpAddr::from_str("3.33.52.3")?;
+    fw.block_ip(ip).await?;
+    log::info!("FirewallManager ip allowed  {}", ip);
+    let is_blocked = fw.is_ip_blocked(ip).await?;
+
+    log::info!("FirewallManager ip blocked {} {}", ip, is_blocked);
     let ctrl_c = signal::ctrl_c();
     println!("Waiting for Ctrl-C...");
     ctrl_c.await?;
